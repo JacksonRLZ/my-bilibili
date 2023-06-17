@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bilibili.mapper.UserRoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.bilibili.domain.auth.UserRole">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="roleId" column="roleId" jdbcType="BIGINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="UserAuthoritiesMap" type="com.bilibili.domain.auth.UserRole">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="roleId" column="roleId" jdbcType="BIGINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <association property="authRole" javaType="com.bilibili.domain.auth.AuthRole">
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,userId,roleId,
+        createTime
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_role
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="getUserAuthoritiesByUserId" resultMap="UserAuthoritiesMap" parameterType="java.lang.Long">
+        select ur.*,
+               ar.code roleCode,
+               ar.name roleName
+        from t_user_role ur
+                 left join t_auth_role ar
+                           on ur.roleId = ar.id
+        where ur.userId = #{userId}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from t_user_role
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.bilibili.domain.auth.UserRole"
+            useGeneratedKeys="true">
+        insert into t_user_role
+        ( id, userId, roleId
+        , createTime)
+        values ( #{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}
+               , #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.bilibili.domain.auth.UserRole"
+            useGeneratedKeys="true">
+        insert into t_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">userId,</if>
+            <if test="roleId != null">roleId,</if>
+            <if test="createTime != null">createTime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=BIGINT},</if>
+            <if test="userId != null">#{userId,jdbcType=BIGINT},</if>
+            <if test="roleId != null">#{roleId,jdbcType=BIGINT},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bilibili.domain.auth.UserRole">
+        update t_user_role
+        <set>
+            <if test="userId != null">
+                userId = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                roleId = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.bilibili.domain.auth.UserRole">
+        update t_user_role
+        set userId     = #{userId,jdbcType=BIGINT},
+            roleId     = #{roleId,jdbcType=BIGINT},
+            createTime = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

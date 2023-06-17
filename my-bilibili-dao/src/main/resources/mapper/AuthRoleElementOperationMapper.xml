@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bilibili.mapper.AuthRoleElementOperationMapper">
+
+    <resultMap id="BaseResultMap" type="com.bilibili.domain.auth.AuthRoleElementOperation">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="roleId" column="roleId" jdbcType="BIGINT"/>
+        <result property="elementOperationId" column="elementOperationId" jdbcType="BIGINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="AuthRoleElementOperationMap" type="com.bilibili.domain.auth.AuthRoleElementOperation">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="roleId" column="roleId" jdbcType="BIGINT"/>
+        <result property="elementOperationId" column="elementOperationId" jdbcType="BIGINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <association property="authElementOperation" javaType="com.bilibili.domain.auth.AuthElementOperation">
+            <id column="elementName" property="elementName"/>
+            <id column="elementCode" property="elementCode"/>
+            <id column="operationType" property="operationType"/>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,roleId,elementOperationId,
+        createTime
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_auth_role_element_operation
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="getRoleElementOperationByRoleIds" parameterType="java.util.Set"
+            resultMap="AuthRoleElementOperationMap">
+        select areo.*,
+        aeo.elementName,
+        aeo.elementCode,
+        aeo.operationType
+        from t_auth_role_element_operation areo
+        left join t_auth_element_operation aeo
+        on aeo.id = areo.elementOperationId
+        where areo.roleId in
+        <foreach collection="roleIdSet" item="roleId" index="index" open="(" close=")" separator=",">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from t_auth_role_element_operation
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.bilibili.domain.auth.AuthRoleElementOperation" useGeneratedKeys="true">
+        insert into t_auth_role_element_operation
+        ( id, roleId, elementOperationId
+        , createTime)
+        values ( #{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{elementOperationId,jdbcType=BIGINT}
+               , #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.bilibili.domain.auth.AuthRoleElementOperation" useGeneratedKeys="true">
+        insert into t_auth_role_element_operation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="roleId != null">roleId,</if>
+            <if test="elementOperationId != null">elementOperationId,</if>
+            <if test="createTime != null">createTime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=BIGINT},</if>
+            <if test="roleId != null">#{roleId,jdbcType=BIGINT},</if>
+            <if test="elementOperationId != null">#{elementOperationId,jdbcType=BIGINT},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bilibili.domain.auth.AuthRoleElementOperation">
+        update t_auth_role_element_operation
+        <set>
+            <if test="roleId != null">
+                roleId = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="elementOperationId != null">
+                elementOperationId = #{elementOperationId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.bilibili.domain.auth.AuthRoleElementOperation">
+        update t_auth_role_element_operation
+        set roleId             = #{roleId,jdbcType=BIGINT},
+            elementOperationId = #{elementOperationId,jdbcType=BIGINT},
+            createTime         = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

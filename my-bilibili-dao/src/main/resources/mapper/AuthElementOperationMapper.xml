@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bilibili.mapper.AuthElementOperationMapper">
+
+    <resultMap id="BaseResultMap" type="com.bilibili.domain.auth.AuthElementOperation">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="elementName" column="elementName" jdbcType="VARCHAR"/>
+            <result property="elementCode" column="elementCode" jdbcType="VARCHAR"/>
+            <result property="operationType" column="operationType" jdbcType="VARCHAR"/>
+            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,elementName,elementCode,
+        operationType,createTime,updateTime
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_auth_element_operation
+        where  id = #{id,jdbcType=BIGINT} 
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from t_auth_element_operation
+        where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.bilibili.domain.auth.AuthElementOperation" useGeneratedKeys="true">
+        insert into t_auth_element_operation
+        ( id,elementName,elementCode
+        ,operationType,createTime,updateTime
+        )
+        values (#{id,jdbcType=BIGINT},#{elementName,jdbcType=VARCHAR},#{elementCode,jdbcType=VARCHAR}
+        ,#{operationType,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.bilibili.domain.auth.AuthElementOperation" useGeneratedKeys="true">
+        insert into t_auth_element_operation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="elementName != null">elementName,</if>
+                <if test="elementCode != null">elementCode,</if>
+                <if test="operationType != null">operationType,</if>
+                <if test="createTime != null">createTime,</if>
+                <if test="updateTime != null">updateTime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id,jdbcType=BIGINT},</if>
+                <if test="elementName != null">#{elementName,jdbcType=VARCHAR},</if>
+                <if test="elementCode != null">#{elementCode,jdbcType=VARCHAR},</if>
+                <if test="operationType != null">#{operationType,jdbcType=VARCHAR},</if>
+                <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+                <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bilibili.domain.auth.AuthElementOperation">
+        update t_auth_element_operation
+        <set>
+                <if test="elementName != null">
+                    elementName = #{elementName,jdbcType=VARCHAR},
+                </if>
+                <if test="elementCode != null">
+                    elementCode = #{elementCode,jdbcType=VARCHAR},
+                </if>
+                <if test="operationType != null">
+                    operationType = #{operationType,jdbcType=VARCHAR},
+                </if>
+                <if test="createTime != null">
+                    createTime = #{createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="updateTime != null">
+                    updateTime = #{updateTime,jdbcType=TIMESTAMP},
+                </if>
+        </set>
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.bilibili.domain.auth.AuthElementOperation">
+        update t_auth_element_operation
+        set 
+            elementName =  #{elementName,jdbcType=VARCHAR},
+            elementCode =  #{elementCode,jdbcType=VARCHAR},
+            operationType =  #{operationType,jdbcType=VARCHAR},
+            createTime =  #{createTime,jdbcType=TIMESTAMP},
+            updateTime =  #{updateTime,jdbcType=TIMESTAMP}
+        where   id = #{id,jdbcType=BIGINT} 
+    </update>
+</mapper>

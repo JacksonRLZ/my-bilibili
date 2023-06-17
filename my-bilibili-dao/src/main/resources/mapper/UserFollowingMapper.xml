@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bilibili.mapper.UserFollowingMapper">
+
+    <resultMap id="BaseResultMap" type="com.bilibili.domain.UserFollowing">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="followingId" column="followingId" jdbcType="INTEGER"/>
+        <result property="groupId" column="groupId" jdbcType="INTEGER"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,userId,followingId,groupId,createTime
+    </sql>
+
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_following
+        where id = #{id}
+    </select>
+    <select id="getUserFollowings" resultType="com.bilibili.domain.UserFollowing" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_following
+        where userId = #{userId}
+    </select>
+    <select id="getUserFans" resultType="com.bilibili.domain.UserFollowing" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_following
+        where followingId = #{userId}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from t_user_following
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteUserFollowing">
+        delete
+        from t_user_following
+        where userId = #{userId}
+          and followingId = #{followingId}
+    </delete>
+
+    <insert id="addUserFollowing" parameterType="com.bilibili.domain.UserFollowing">
+        insert into t_user_following
+        ( userId, followingId
+        , groupId, createTime)
+        values ( #{userId}, #{followingId}
+               , #{groupId}, #{createTime})
+    </insert>
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.bilibili.domain.UserFollowing"
+            useGeneratedKeys="true">
+        insert into t_user_following
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">userId,</if>
+            <if test="followingId != null">followingId,</if>
+            <if test="groupId != null">groupId,</if>
+            <if test="createTime != null">createTime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=BIGINT},</if>
+            <if test="userId != null">#{userId,jdbcType=BIGINT},</if>
+            <if test="followingId != null">#{followingId,jdbcType=INTEGER},</if>
+            <if test="groupId != null">#{groupId,jdbcType=INTEGER},</if>
+            <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bilibili.domain.UserFollowing">
+        update t_user_following
+        <set>
+            <if test="userId != null">
+                userId = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="followingId != null">
+                followingId = #{followingId,jdbcType=INTEGER},
+            </if>
+            <if test="groupId != null">
+                groupId = #{groupId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.bilibili.domain.UserFollowing">
+        update t_user_following
+        set userId      = #{userId},
+            followingId = #{followingId},
+            groupId     = #{groupId},
+            createTime  = #{createTime}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

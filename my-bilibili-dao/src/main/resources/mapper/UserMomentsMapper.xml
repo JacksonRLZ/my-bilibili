@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bilibili.mapper.UserMomentsMapper">
+
+    <resultMap id="BaseResultMap" type="com.bilibili.domain.UserMoments">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="contentId" column="contentId" jdbcType="BIGINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,userId,type,
+        contentId,createTime,updateTime
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user_moments
+        where id = #{id}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from t_user_moments
+        where id = #{id}
+    </delete>
+    <insert id="addUserMoments" keyProperty="id" parameterType="com.bilibili.domain.UserMoments" useGeneratedKeys="true">
+        insert into t_user_moments
+        ( id, userId, type
+        , contentId, createTime)
+        values ( #{id}, #{userId}, #{type}
+               , #{contentId}, #{createTime})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.bilibili.domain.UserMoments"
+            useGeneratedKeys="true">
+        insert into t_user_moments
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">userId,</if>
+            <if test="type != null">type,</if>
+            <if test="contentId != null">contentId,</if>
+            <if test="createTime != null">createTime,</if>
+            <if test="updateTime != null">updateTime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="contentId != null">#{contentId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bilibili.domain.UserMoments">
+        update t_user_moments
+        <set>
+            <if test="userId != null">
+                userId = #{userId},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="contentId != null">
+                contentId = #{contentId},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                updateTime = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.bilibili.domain.UserMoments">
+        update t_user_moments
+        set userId     = #{userId},
+            type       = #{type},
+            contentId  = #{contentId},
+            createTime = #{createTime},
+            updateTime = #{updateTime}
+        where id = #{id}
+    </update>
+</mapper>
